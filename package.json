@@ -1,0 +1,17 @@
+{
+  "name": "novax-discord-bot",
+  "version": "1.0.0",
+  "description": "Novax — an OpenAI-powered Discord assistant.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node index.js",
+    "commands": "node deploy-commands.js"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "dependencies": {
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.4.7",
+    "openai": "^5.12.2"
+  }
+}
