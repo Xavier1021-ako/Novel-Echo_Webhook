@@ -87,7 +87,8 @@ client.on(Events.MessageCreate, async message => {
   if (!client.user || !message.mentions.has(client.user)) return;
 
   const prompt = message.content
-    .replace(new RegExp(`<@!?\${client.user.id}>`, "g"), "")
+    .replaceAll(`<@${client.user.id}>`, "")
+    .replaceAll(`<@!${client.user.id}>`, "")
     .trim()
     .slice(0, MAX_INPUT);
 
@@ -113,7 +114,9 @@ client.on(Events.InteractionCreate, async interaction => {
   const prompt = interaction.options.getString("prompt", true).slice(0, MAX_INPUT);
   try {
     const answer = await generateReply(`slash:${interaction.channelId || "dm"}:user:${interaction.user.id}`, prompt);
-    await sendLongReply(text => interaction.followUp({ content: text }), answer);
+    const chunks = answer.match(/[\\s\\S]{1,1900}/g) || ["I have no response."];
+    await interaction.editReply(chunks[0]);
+    for (const chunk of chunks.slice(1)) await interaction.followUp({ content: chunk });
   } catch (error) {
     console.error("Slash command failed:", error);
     await interaction.editReply("I hit an error while thinking. Check the bot host logs and API configuration.");
